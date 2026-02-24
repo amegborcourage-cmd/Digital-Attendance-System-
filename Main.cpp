@@ -1,4 +1,4 @@
-#include <iostream>
+b#include <iostream>
 #include <vector>
 #include <string>
 
@@ -210,6 +210,110 @@ int main() {
         }
 
     } while (choice != 4);
+
+    return 0;
+}
+#include <vector>
+#include <iomanip>
+using namespace std;
+
+struct Student {
+    int id;
+    string name;
+    int presentDays = 0;
+    int absentDays = 0;
+};
+
+void markAttendance(vector<Student>& students) {
+    char choice;
+
+    cout << "\n--- Mark Attendance ---\n";
+    for (auto &student : students) {
+        while (true) {
+            cout << "Is " << student.name << " present? (P/A): ";
+            cin >> choice;
+
+            if (choice == 'P' || choice == 'p') {
+                student.presentDays++;
+                break;
+            }
+            else if (choice == 'A' || choice == 'a') {
+                student.absentDays++;
+                break;
+            }
+            else {
+                cout << "Invalid input! Enter P or A only.\n";
+            }
+        }
+    }
+}
+
+void generateReport(const vector<Student>& students) {
+    cout << "\n--- Attendance Report ---\n";
+    cout << left << setw(10) << "ID"
+         << setw(20) << "Name"
+         << setw(10) << "Present"
+         << setw(10) << "Absent"
+         << setw(15) << "Percentage\n";
+
+    for (const auto &student : students) {
+        int total = student.presentDays + student.absentDays;
+        double percentage = (total > 0) ? 
+            (double(student.presentDays) / total) * 100 : 0;
+
+        cout << left << setw(10) << student.id
+             << setw(20) << student.name
+             << setw(10) << student.presentDays
+             << setw(10) << student.absentDays
+             << setw(14) << fixed << setprecision(2) << percentage << "%\n";
+    }
+}
+
+int main() {
+    int numberOfStudents;
+
+    cout << "Enter number of students: ";
+    while (!(cin >> numberOfStudents) || numberOfStudents <= 0) {
+        cout << "Invalid number! Enter a positive number: ";
+        cin.clear();
+        cin.ignore(1000, '\n');
+    }
+
+    vector<Student> students(numberOfStudents);
+
+    for (int i = 0; i < numberOfStudents; i++) {
+        cout << "\nEnter details for student " << i + 1 << endl;
+        cout << "ID: ";
+        cin >> students[i].id;
+        cout << "Name: ";
+        cin >> students[i].name;
+    }
+
+    int option;
+
+    do {
+        cout << "\n--- MENU ---\n";
+        cout << "1. Mark Attendance\n";
+        cout << "2. Generate Report\n";
+        cout << "3. Exit\n";
+        cout << "Choose option: ";
+        cin >> option;
+
+        switch (option) {
+            case 1:
+                markAttendance(students);
+                break;
+            case 2:
+                generateReport(students);
+                break;
+            case 3:
+                cout << "Exiting program...\n";
+                break;
+            default:
+                cout << "Invalid option!\n";
+        }
+
+    } while (option != 3);
 
     return 0;
 }
