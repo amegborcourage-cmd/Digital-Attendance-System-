@@ -317,3 +317,121 @@ int main() {
 
     return 0;
 }
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+struct Student {
+    string name;
+    int attendanceCount;
+};
+
+// Function to save data to file
+void saveToFile(const vector<Student>& students) {
+    ofstream file("attendance.txt");
+
+    if (!file) {
+        cout << "Error opening file!\n";
+        return;
+    }
+
+    for (const Student& s : students) {
+        file << s.name << "," << s.attendanceCount << endl;
+    }
+
+    file.close();
+    cout << "Data saved successfully.\n";
+}
+
+// Function to load data from file
+void loadFromFile(vector<Student>& students) {
+    ifstream file("attendance.txt");
+
+    if (!file) {
+        cout << "No previous data found.\n";
+        return;
+    }
+
+    students.clear();
+    string line;
+
+    while (getline(file, line)) {
+        size_t comma = line.find(",");
+        string name = line.substr(0, comma);
+        int attendance = stoi(line.substr(comma + 1));
+
+        students.push_back({name, attendance});
+    }
+
+    file.close();
+    cout << "Data loaded successfully.\n";
+}
+
+// Function to add student
+void addStudent(vector<Student>& students) {
+    Student s;
+    cout << "Enter student name: ";
+    cin >> s.name;
+    s.attendanceCount = 0;
+
+    students.push_back(s);
+    cout << "Student added successfully.\n";
+}
+
+// Function to mark attendance
+void markAttendance(vector<Student>& students) {
+    string name;
+    cout << "Enter student name: ";
+    cin >> name;
+
+    for (Student& s : students) {
+        if (s.name == name) {
+            s.attendanceCount++;
+            cout << "Attendance marked.\n";
+            return;
+        }
+    }
+
+    cout << "Student not found.\n";
+}
+
+// Function to display students
+void displayStudents(const vector<Student>& students) {
+    cout << "\n--- Attendance List ---\n";
+    for (const Student& s : students) {
+        cout << "Name: " << s.name 
+             << " | Attendance: " << s.attendanceCount << endl;
+    }
+}
+
+int main() {
+    vector<Student> students;
+    int choice;
+
+    loadFromFile(students);
+
+    do {
+        cout << "\n1. Add Student\n";
+        cout << "2. Mark Attendance\n";
+        cout << "3. Display Students\n";
+        cout << "4. Save\n";
+        cout << "5. Exit\n";
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        switch (choice) {
+            case 1: addStudent(students); break;
+            case 2: markAttendance(students); break;
+            case 3: displayStudents(students); break;
+            case 4: saveToFile(students); break;
+            case 5: saveToFile(students); break;
+            default: cout << "Invalid choice.\n";
+        }
+
+    } while (choice != 5);
+
+    return 0;
+}
